@@ -25,7 +25,6 @@ forecast_out = int(math.ceil(0.01*len(df)))
 
 # Shift the label col above by forecast_out
 df['label'] = df[forecast_col].shift(-forecast_out)
-df.dropna(inplace=True)
 
 '''
 Date        |  Adj. Close  HL_PCT    PCT_change  Adj. Volume  |    label
@@ -38,12 +37,16 @@ Date        |  Adj. Close  HL_PCT    PCT_change  Adj. Volume  |    label
 
 '''
 
-#
+# Extracting features and label
 X = np.array(df.drop(['label'], 1))
-y = np.array(df['label'])
-
 # Scaling out features in range of -1 to 1, speed up process and improves the accuracy.
 X = preprocessing.scale(X)
+X = X[:-forecast_out]
+# data to forecast out
+X_lately = X[forecast_out:]
+
+df.dropna(inplace=True)
+y = np.array(df['label'])
 
 
 #  Training and Testing
@@ -56,15 +59,19 @@ clf = LinearRegression(n_jobs=-1) # -1 run jobs as many as possible
 clf.fit(X_train, y_train)
 accuracy = clf.score(X_test, y_test)
 
-print("linear: {}".format(accuracy))
-print("--------------------------------")
+# Forecasting on X_lately
+forecast_set = clf.predict(X_lately)
+print(forecast_set, accuracy, forecast_out)
 
-print("Support Vector:")
-# Comparing kernal in SVR
-for k in ['linear', 'poly', 'rbf', 'sigmoid']:
-  clf = svm.SVR(kernel=k)
-  clf.fit(X_train, y_train)
-  accuracy = clf.score(X_test, y_test)
-  print(k, accuracy)
+# print("linear: {}".format(accuracy))
+# print("--------------------------------")
+
+# print("Support Vector:")
+# # Comparing kernal in SVR
+# for k in ['linear', 'poly', 'rbf', 'sigmoid']:
+#   clf = svm.SVR(kernel=k)
+#   clf.fit(X_train, y_train)
+#   accuracy = clf.score(X_test, y_test)
+#   print(k, accuracy)
 
 
