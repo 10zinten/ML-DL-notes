@@ -47,15 +47,24 @@ X = preprocessing.scale(X)
 
 
 #  Training and Testing
-# Spliting dataset into training - 80 and testing - 20 = test_size = 0.2
+# Shuffle and Spliting dataset into training - 80 and testing - 20 = test_size = 0.2
 X_train, X_test, y_train, y_test = cross_validation.train_test_split(X, y, test_size=0.2)
 
 # Using sklearn classifier - LinearRegression
+print("Linear Regression:")
 clf = LinearRegression(n_jobs=-1) # -1 run jobs as many as possible
-#clf = svm.SVR(kernel='poly') # with svm models
 clf.fit(X_train, y_train)
 accuracy = clf.score(X_test, y_test)
 
-print(accuracy)
+print("linear: {}".format(accuracy))
+print("--------------------------------")
+
+print("Support Vector:")
+# Comparing kernal in SVR
+for k in ['linear', 'poly', 'rbf', 'sigmoid']:
+  clf = svm.SVR(kernel=k)
+  clf.fit(X_train, y_train)
+  accuracy = clf.score(X_test, y_test)
+  print(k, accuracy)
 
 
