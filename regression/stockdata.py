@@ -1,12 +1,15 @@
+import datetime
 import math
 import quandl
 
+import matplotlib.pyplot as plt
+from matplotlib import style
 import numpy as np
 import pandas as pd
 from sklearn import preprocessing, cross_validation, svm
 from sklearn.linear_model import LinearRegression
 
-
+style.use('ggplot')
 
 quandl.ApiConfig.api_key = 'JkDjXva81_ujYvG2Swcr'
 
@@ -41,9 +44,11 @@ Date        |  Adj. Close  HL_PCT    PCT_change  Adj. Volume  |    label
 X = np.array(df.drop(['label'], 1))
 # Scaling out features in range of -1 to 1, speed up process and improves the accuracy.
 X = preprocessing.scale(X)
-X = X[:-forecast_out]
 # data to forecast out
-X_lately = X[forecast_out:]
+X_lately = X[-forecast_out:]
+X = X[:-forecast_out]
+
+
 
 df.dropna(inplace=True)
 y = np.array(df['label'])
@@ -73,5 +78,29 @@ print(forecast_set, accuracy, forecast_out)
 #   clf.fit(X_train, y_train)
 #   accuracy = clf.score(X_test, y_test)
 #   print(k, accuracy)
+
+
+# Ploting a graph with matplotlib
+
+df['Forecast'] = np.nan
+last_date = df.iloc[-1].name
+last_unix = last_date.timestamp()
+one_day = 86400
+next_unix = last_unix + one_day
+
+# Populating datetime and forecast for each datetime
+for i in forecast_set:
+  next_date = datetime.datetime.fromtimestamp(next_unix)
+  next_unix += one_day
+  df.loc[next_date] = [np.nan for _ in range(len(df.columns) - 1)] + [i]
+
+print(df)
+
+df['Adj. Close'].plot()
+df['Forecast'].plot()
+plt.legend(loc=4)
+plt.xlabel('Date')
+plt.ylabel('Price')
+plt.show()
 
 
