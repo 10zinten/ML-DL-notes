@@ -1,6 +1,7 @@
 import datetime
 import math
 import quandl
+import pickle # Serailzes and saves any python objects
 
 import matplotlib.pyplot as plt
 from matplotlib import style
@@ -47,9 +48,6 @@ X = preprocessing.scale(X)
 # data to forecast out
 X_lately = X[-forecast_out:]
 X = X[:-forecast_out]
-
-
-
 df.dropna(inplace=True)
 y = np.array(df['label'])
 
@@ -59,9 +57,16 @@ y = np.array(df['label'])
 X_train, X_test, y_train, y_test = cross_validation.train_test_split(X, y, test_size=0.2)
 
 # Using sklearn classifier - LinearRegression
-print("Linear Regression:")
-clf = LinearRegression(n_jobs=-1) # -1 run jobs as many as possible
-clf.fit(X_train, y_train)
+# print("Linear Regression:")
+# clf = LinearRegression(n_jobs=-1) # -1 run jobs as many as possible
+# clf.fit(X_train, y_train)
+# # Saving trained LR model in file
+# with open('linearregression.pickel', 'wb') as f:
+#   pickle.dump(clf, f)
+
+pickle_in = open('linearregression.pickel', 'rb')
+clf = pickle.load(pickle_in)
+
 accuracy = clf.score(X_test, y_test)
 
 # Forecasting on X_lately
