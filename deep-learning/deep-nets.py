@@ -1,7 +1,7 @@
 import tensorflow as tf
 from tensorflow.examples.tutorials.mnist import input_data
 
-mnist = input_data.read_data_sets('/tmp/data', one_hot=True)
+mnist = input_data.read_data_sets('MNIST_data/', one_hot=True)
 
 # about one_hot parameter
 # we have 10 classes, 0-9, with one_hot as true, each data point looks like following
@@ -16,33 +16,38 @@ mnist = input_data.read_data_sets('/tmp/data', one_hot=True)
 n_nodes_hl1 = 500
 n_nodes_hl2 = 500
 n_nodes_hl3 = 500
-
-# output layer and its #units
 n_classes = 10
+
+# Python optimisatioin variables
+learning_rate = 0.5
+epochs = 10
 batch_size = 100
 
-# matrix is height x width
-x = tf.placeholder('float', [None, 28 * 28])
-y = tf.placeholder('float')
+# declare the training data placeholders
+
+# input x - for 28 x 28 pixels = 784
+x = tf.placeholder(tf.float32, [None, 784])
+# output data placeholder - 10 digist/classes
+y = tf.placeholder(tf.float32, [None, n_classes])
 
 # Nueral network Models
 def neural_networl_model(data):
 
   # initialization of hidden layers and output layer
 
-  hidden_1_layer = {'weights': tf.Variable(tf.random_normal([784, n_nodes_hl1])),
-                    'biases': tf.Variable(tf.random_normal([n_nodes_hl1]))}
+  hidden_1_layer = {'weights': tf.Variable(tf.random_normal([784, n_nodes_hl1], stddev=0.03), name='W1'),
+                    'biases': tf.Variable(tf.random_normal([n_nodes_hl1]), name='b1')}
 
-  hidden_2_layer = {'weights': tf.Variable(tf.random_normal([n_nodes_hl1, n_nodes_hl2])),
-                    'biases': tf.Variable(tf.random_normal([n_nodes_hl2]))}
+  hidden_2_layer = {'weights': tf.Variable(tf.random_normal([n_nodes_hl1, n_nodes_hl2], stddev=0.03), name='W2'),
+                    'biases': tf.Variable(tf.random_normal([n_nodes_hl2]), name='b2')}
 
-  hidden_3_layer = {'weights': tf.Variable(tf.random_normal([n_nodes_hl2, n_nodes_hl1])),
-                    'biases': tf.Variable(tf.random_normal([n_nodes_hl3]))}
+  hidden_3_layer = {'weights': tf.Variable(tf.random_normal([n_nodes_hl2, n_nodes_hl1], stddev=0.03), name='W3'),
+                    'biases': tf.Variable(tf.random_normal([n_nodes_hl3]), name='b3' )}
 
   output_layer = {'weights': tf.Variable(tf.random_normal([n_nodes_hl3, n_classes])),
                     'biases': tf.Variable(tf.random_normal([n_classes]))}
 
-  # Neural network models
+  # calculate the output of the hidden layer
   #(input_data * wieghts) + baises
 
   l1 = tf.add(tf.matmul(data, hidden_1_layer['weights']), hidden_1_layer['biases'])
@@ -84,5 +89,6 @@ def train_neural_network(x):
     print('Accuracy: ', accuracy.eval({x:mnist.test.images, y:mnist.test.labels}))
 
 train_neural_network(x)
+
 
 
