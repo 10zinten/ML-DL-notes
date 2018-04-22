@@ -44,6 +44,10 @@ print(o.eval())
 ol = tf.ones_like(input_tensor)
 print(ol.eval())
 
+''' tf.fill(dims, value, name=None) '''
+# create a tensor filled with a scalar value.
+f = tf.fill([2, 3], 8) # ==> [[8, 8, 8], [8, 8, 8]]
+print(f.eval())
 
 # Creating constants that are sequences
 
