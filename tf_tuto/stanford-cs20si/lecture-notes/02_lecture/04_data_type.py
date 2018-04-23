@@ -49,5 +49,7 @@ print(a.eval())
 ''' continue:
 - In tf.Session.run(), if request object is a Tensor, the output will be NumPy array.
 - TL;DL: Most of the times, we can use TensorFlow types and NumPy types interchaneably.
-- But always use TensorFlow types when possible.
+- But always use TensorFlow types instead of NumPy types when possible
+- Do not use python native types for tensor because Tensorflow has to infer python types.
+- Python types are not explicit, all int are same but tf.int32, tf.int64 ....
 '''
