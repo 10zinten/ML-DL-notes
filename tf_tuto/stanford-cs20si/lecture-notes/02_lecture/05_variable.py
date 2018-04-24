@@ -118,3 +118,15 @@ W = tf.Variable(tf.truncated_normal([700, 10]))
 # use initialized_value() to make sure W is initialized before its value is used
 # to initialize U.
 U = tf.Variable(W.initialized_value() * 2)
+
+
+'''
+Contorl Dependencies:
+    We can specify which ops should be run first.
+    Use tf.Graph().control_depencies([control_inputs])
+
+    # Your graph g have 5 ops: a, b, c, d, e
+    with g.control_dependencies([a, b, c]):
+        # `d` and `e` will only run after `a`, `b` and `c` have executed.
+        d = ...
+        e = ...
