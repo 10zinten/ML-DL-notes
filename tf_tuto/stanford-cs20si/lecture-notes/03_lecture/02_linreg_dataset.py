@@ -67,3 +67,13 @@ plt.plot(data[:, 0], data[:, 1], 'bo', label="Real data")
 plt.plot(data[:, 0], data[:, 0] * w_out + b_out, 'r', label='Predicted data')
 plt.legend()
 plt.show()
+
+# some usefule tf Dataset method
+'''
+dataset = dataset.shuffle(1000)
+dataset = dataset.repeat(100)
+dataset = dataset.batch(128)
+dataset = dataset.map(lambda x: tf.one_hot(x, 10))
+# convert each element of dataset to one_hot vector
+'''
+
