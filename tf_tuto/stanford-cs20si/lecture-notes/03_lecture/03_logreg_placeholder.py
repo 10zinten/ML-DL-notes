@@ -41,6 +41,11 @@ entropy = tf.nn.softmax_cross_entropy_with_logits(logits=logits, labels=Y, name=
 loss = tf.reduce_mean(entropy) # computes the mean over all the examples in the batch
 # loss = tf.reduce_mean(-tf.reduce_sum(tf.nn.softmax(logits) * tf.log(Y), reduction_indices=[1]))
 
+tf.summary.scalar('loss', loss)
+
+activations = tf.nn.softmax(logits)
+tf.summary.histogram('activations', activations)
+
 # Step 6: define training op
 # using gradient descent with learning rate of 0.01 to minimize loss
 optimizer = tf.train.AdamOptimizer(learning_rate).minimize(loss)
@@ -50,6 +55,8 @@ preds = tf.nn.softmax(logits)
 correct_preds = tf.equal(tf.argmax(preds, 1), tf.argmax(Y, 1))
 accuracy = tf.reduce_sum(tf.cast(correct_preds, tf.float32))
 
+# Merge all the summaries and write the out to logdir
+merged = tf.summary.merge_all()
 writer = tf.summary.FileWriter('./graphs/logreg_placeholder', tf.get_default_graph())
 start_time = time.time()
 with tf.Session() as sess:
@@ -59,11 +66,16 @@ with tf.Session() as sess:
     # train the model n_epochs times
     for i in range(n_epochs):
         total_loss = 0
+        counter = 0
 
-        for _ in range(n_batches):
+        for n in range(n_batches):
             X_batch, Y_batch = mnist.train.next_batch(batch_size)
-            _, loss_batch = sess.run([optimizer, loss], {X: X_batch, Y:Y_batch})
+            _, loss_batch, summary = sess.run([optimizer, loss, merged], {X: X_batch, Y:Y_batch})
             total_loss += loss_batch
+
+            # Write logs at every iteration
+            writer.add_summary(summary, i * n_batches+n)
+
         print('Average loss epoch {0}: {1}'.format(i, total_loss/n_batches))
 
     print('[INFO] Training Time: {0} secs'.format(time.time() - start_time))
