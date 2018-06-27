@@ -93,7 +93,10 @@ print(sess.run(out))
 # Hint: use tf.unique(). Keep in mind that tf.unique() returns a tuple.
 ###############################################################################
 
-# YOUR CODE
+x = tf.constant([5, 2, 3, 5, 10, 6, 2, 3, 4, 2, 1, 1, 0, 9])
+out, idx = tf.unique(x)
+print(sess.run(out))
+print(sess.run(idx))
 
 ###############################################################################
 # 1h: Create two tensors x and y of shape 300 from any normal distribution,
@@ -105,4 +108,10 @@ print(sess.run(out))
 # Hint: see the Huber loss function in the lecture slides 3.
 ###############################################################################
 
-# YOUR CODE
+x = tf.random_normal([300], mean=5, stddev=1)
+y = tf.random_normal([300], mean=5, stddev=1)
+average = tf.reduce_mean(x - y)
+def f1(): return tf.reduce_mean(tf.square(x - y))
+def f2(): return tf.reduce_sum(tf.abs(x - y))
+out = tf.cond(average < 0, f1, f2)
+print(sess.run(out))
