@@ -40,7 +40,10 @@ print(sess.run(out))
 # Hint: Look up tf.equal().
 ###############################################################################
 
-# YOUR CODE
+x = tf.constant([[0, -2, -1], [0, 1, 2]])
+y = tf.zeros_like(x)
+out = tf.equal(x, y)
+print(sess.run(out))
 
 ###############################################################################
 # 1d: Create the tensor x of value
@@ -55,7 +58,15 @@ print(sess.run(out))
 # Hint: Use tf.gather().
 ###############################################################################
 
-# YOUR CODE
+x = tf.constant([29.05088806,  27.61298943,  31.19073486,  29.35532951,
+                                30.97266006,  26.67541885,  38.08450317,  20.74983215,
+                                34.94445419,  34.45999146,  29.06485367,  36.01657104,
+                                27.88236427,  20.56035233,  30.20379066,  29.51215172,
+                                33.71149445,  28.59134293,  36.05556488,  28.66994858])
+indices = tf.where(x > 30)
+out = tf.gather(x, indices)
+print(sess.run(indices))
+print(sess.run(out))
 
 ###############################################################################
 # 1e: Create a diagnoal 2-d tensor of size 6 x 6 with the diagonal values of 1,
@@ -63,7 +74,8 @@ print(sess.run(out))
 # Hint: Use tf.range() and tf.diag().
 ###############################################################################
 
-# YOUR CODE
+x = tf.diag(tf.range(1, 7))
+print(sess.run(x))
 
 ###############################################################################
 # 1f: Create a random 2-d tensor of size 10 x 10 from any distribution.
@@ -71,7 +83,9 @@ print(sess.run(out))
 # Hint: Look at tf.matrix_determinant().
 ###############################################################################
 
-# YOUR CODE
+m = tf.random_normal([10, 10], mean=10, stddev=1)
+out = tf.matrix_determinant(m)
+print(sess.run(out))
 
 ###############################################################################
 # 1g: Create tensor x with value [5, 2, 3, 5, 10, 6, 2, 3, 4, 2, 1, 1, 0, 9].
